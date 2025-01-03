@@ -175,8 +175,15 @@ const Player = ({ position = [0, 1, 0], size = 0.3 }) => {
           fragmentShader={wobbleFragmentShader}
         />
         <CustomShaderMaterial
+          baseMaterial={THREE.MeshDistanceMaterial}
+          attach="customDistanceMaterial"
+          uniforms={uniforms}
+          vertexShader={wobbleVertexShader}
+          fragmentShader={wobbleFragmentShader}
+        />
+        <CustomShaderMaterial
           baseMaterial={THREE.MeshDepthMaterial}
-          attach="depthMaterial"
+          attach="customDepthMaterial"
           uniforms={uniforms}
           vertexShader={wobbleVertexShader}
           fragmentShader={wobbleFragmentShader}
