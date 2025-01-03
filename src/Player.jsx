@@ -7,8 +7,8 @@ import useGame from "./stores/useGame"
 import wobbleVertexShader from "./shaders/wobble/vertex.glsl"
 import wobbleFragmentShader from "./shaders/wobble/fragment.glsl"
 import { mergeVertices } from "three/addons/utils/BufferGeometryUtils.js"
-// import CustomShaderMaterial from "three-custom-shader-material"
-import CSM from "three-custom-shader-material/vanilla"
+import CustomShaderMaterial from "three-custom-shader-material"
+// import CSM from "three-custom-shader-material/vanilla"
 const debugObject = {}
 debugObject.colorA = "#0000ff"
 debugObject.colorB = "#ff0000"
@@ -40,25 +40,25 @@ const Player = ({ position = [0, 1, 0], size = 0.3 }) => {
     }
   }, [])
 
-  const material = useMemo(() => {
-    return new CSM({
-      baseMaterial: THREE.MeshPhysicalMaterial,
-      vertexShader: wobbleVertexShader,
-      fragmentShader: wobbleFragmentShader,
-      uniforms: uniforms,
-    })
-  }, [])
+  // const material = useMemo(() => {
+  //   return new CSM({
+  //     baseMaterial: THREE.MeshPhysicalMaterial,
+  //     vertexShader: wobbleVertexShader,
+  //     fragmentShader: wobbleFragmentShader,
+  //     uniforms: uniforms,
+  //   })
+  // }, [])
 
-  const depthMaterial = useMemo(() => {
-    return new CSM({
-      baseMaterial: THREE.MeshDepthMaterial,
-      vertexShader: wobbleVertexShader,
-      fragmentShader: wobbleFragmentShader,
-      uniforms: uniforms,
-      silent: true,
-      depthPacking: THREE.RGBADepthPacking,
-    })
-  }, [])
+  // const depthMaterial = useMemo(() => {
+  //   return new CSM({
+  //     baseMaterial: THREE.MeshDepthMaterial,
+  //     vertexShader: wobbleVertexShader,
+  //     fragmentShader: wobbleFragmentShader,
+  //     uniforms: uniforms,
+  //     silent: true,
+  //     depthPacking: THREE.RGBADepthPacking,
+  //   })
+  // }, [])
 
   useEffect(() => {
     useGame.subscribe(
@@ -82,9 +82,17 @@ const Player = ({ position = [0, 1, 0], size = 0.3 }) => {
       start()
     })
 
+    const unsubscribeRestart = subscribeKeys(
+      (state) => state.restart,
+      (value) => {
+        if (value) restart()
+      }
+    )
+
     return () => {
       unsubscribeJump()
       unsubscribeAny()
+      unsubscribeRestart()
     }
   }, [subscribeKeys])
 
@@ -185,10 +193,23 @@ const Player = ({ position = [0, 1, 0], size = 0.3 }) => {
         castShadow
         receiveShadow
         geometry={geometry}
-        material={material}
-        custumDepthMaterial={depthMaterial}
+        // material={material}
+        // custumDepthMaterial={depthMaterial}
       >
         {/* CustomShaderMaterial components removed */}
+        <CustomShaderMaterial
+          baseMaterial={THREE.MeshStandardMaterial}
+          uniforms={uniforms}
+          vertexShader={wobbleVertexShader}
+          fragmentShader={wobbleFragmentShader}
+        />
+        <CustomShaderMaterial
+          baseMaterial={THREE.MeshDepthMaterial}
+          attach="depthMaterial"
+          uniforms={uniforms}
+          vertexShader={wobbleVertexShader}
+          fragmentShader={wobbleFragmentShader}
+        />
       </mesh>
     </RigidBody>
   )

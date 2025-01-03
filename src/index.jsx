@@ -14,6 +14,7 @@ root.render(
       { name: "left", keys: ["ArrowLeft", "KeyA"] },
       { name: "right", keys: ["ArrowRight", "KeyD"] },
       { name: "jump", keys: ["Space"] },
+      { name: "restart", keys: ["KeyR", "Escape"] },
     ]}
   >
     <Canvas
