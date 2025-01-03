@@ -8,13 +8,12 @@ import wobbleVertexShader from "./shaders/wobble/vertex.glsl"
 import wobbleFragmentShader from "./shaders/wobble/fragment.glsl"
 import { mergeVertices } from "three/addons/utils/BufferGeometryUtils.js"
 import CustomShaderMaterial from "three-custom-shader-material"
-// import CSM from "three-custom-shader-material/vanilla"
 const debugObject = {}
 debugObject.colorA = "#0000ff"
 debugObject.colorB = "#ff0000"
 
 const Player = ({ position = [0, 1, 0], size = 0.3 }) => {
-  const start = useGame((state) => state.start) // Corrected hook usage
+  const start = useGame((state) => state.start)
   const end = useGame((state) => state.end)
   const restart = useGame((state) => state.restart)
   const blocksCount = useGame((state) => state.blocksCount)
@@ -39,26 +38,6 @@ const Player = ({ position = [0, 1, 0], size = 0.3 }) => {
     }
   }, [])
 
-  // const material = useMemo(() => {
-  //   return new CSM({
-  //     baseMaterial: THREE.MeshPhysicalMaterial,
-  //     vertexShader: wobbleVertexShader,
-  //     fragmentShader: wobbleFragmentShader,
-  //     uniforms: uniforms,
-  //   })
-  // }, [])
-
-  // const depthMaterial = useMemo(() => {
-  //   return new CSM({
-  //     baseMaterial: THREE.MeshDepthMaterial,
-  //     vertexShader: wobbleVertexShader,
-  //     fragmentShader: wobbleFragmentShader,
-  //     uniforms: uniforms,
-  //     silent: true,
-  //     depthPacking: THREE.RGBADepthPacking,
-  //   })
-  // }, [])
-
   useEffect(() => {
     useGame.subscribe(
       (state) => state.phase,
@@ -70,15 +49,15 @@ const Player = ({ position = [0, 1, 0], size = 0.3 }) => {
         }
       }
     )
+
     const unsubscribeJump = subscribeKeys(
       (state) => state.jump,
       (value) => {
         if (value) jump()
       }
     )
-    const unsubscribeAny = subscribeKeys(() => {
-      console.log("key pressed")
-      start()
+    const unsubscribeAny = subscribeKeys((state) => {
+      if (state.forward || state.backward || state.left || state.right) start()
     })
 
     const unsubscribeRestart = subscribeKeys(
@@ -98,7 +77,7 @@ const Player = ({ position = [0, 1, 0], size = 0.3 }) => {
   useFrame((state, delta) => {
     // Movement
     if (!body.current) return
-    const { forward, backward, left, right, jump } = getKeys()
+    const { forward, backward, left, right } = getKeys()
 
     const impulse = { x: 0, y: 0, z: 0 }
     const torque = { x: 0, y: 0, z: 0 }
