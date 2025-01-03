@@ -14,7 +14,6 @@ debugObject.colorA = "#0000ff"
 debugObject.colorB = "#ff0000"
 
 const Player = ({ position = [0, 1, 0], size = 0.3 }) => {
-  const wobbleMaterial = useRef()
   const start = useGame((state) => state.start) // Corrected hook usage
   const end = useGame((state) => state.end)
   const restart = useGame((state) => state.restart)
@@ -189,14 +188,7 @@ const Player = ({ position = [0, 1, 0], size = 0.3 }) => {
       angularDamping={0.5}
       position={position}
     >
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={geometry}
-        // material={material}
-        // custumDepthMaterial={depthMaterial}
-      >
-        {/* CustomShaderMaterial components removed */}
+      <mesh castShadow receiveShadow geometry={geometry}>
         <CustomShaderMaterial
           baseMaterial={THREE.MeshStandardMaterial}
           uniforms={uniforms}
